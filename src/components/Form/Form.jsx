@@ -1,29 +1,22 @@
+import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import { Component } from 'react';
-import {
-  Form,
-  InpetHeader,
-  InputName,
-  InputNumber,
-  InputBtn,
-} from './Form.styled';
-
+import { Form, InputName, InputNumber, InputBtn } from './Form.styled';
 class ContactForm extends Component {
   state = {
+    id: '',
     name: '',
     number: '',
-    id: '',
   };
   handleInput = e => {
     const { name, value } = e.currentTarget;
     this.setState({ [name]: value });
   };
-
   nameCheker = name => {
     return this.props.contactList.find(contact => contact.name === name);
   };
-
   handleSubmit = e => {
+    //  const { name, number } = this.state;
     e.preventDefault();
     const { name, number } = this.state;
     if (this.nameCheker(name)) {
@@ -46,7 +39,6 @@ class ContactForm extends Component {
     const { name, number } = this.state;
     return (
       <Form title="Phonebook" onSubmit={this.handleSubmit}>
-        <InpetHeader>Phonebook</InpetHeader>
         <InputName
           id="name"
           type="text"
@@ -55,7 +47,6 @@ class ContactForm extends Component {
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
           value={name}
-          namevalue={this.state.name}
           onChange={this.handleInput}
         />
         <InputNumber
@@ -74,4 +65,15 @@ class ContactForm extends Component {
     );
   }
 }
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+InputName.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+InputNumber.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 export default ContactForm;

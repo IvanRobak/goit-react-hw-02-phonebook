@@ -1,7 +1,9 @@
 import { Component } from 'react';
-import ContactForm from './Form';
 // import { nanoid } from 'nanoid';
-import ContactList from './ContactList/ContactList';
+import ContactForm from './Form';
+import ContactList from './ContactList';
+import Filter from './Filter';
+import { Container, PhoneBook, Title } from './App.styled';
 export class App extends Component {
   state = {
     contacts: [
@@ -12,7 +14,6 @@ export class App extends Component {
     ],
     filter: '',
   };
-
   submitForm = ({ id, name, number }) => {
     const contact = {
       id,
@@ -29,6 +30,19 @@ export class App extends Component {
       contacts: this.state.contacts.filter(({ id }) => id !== deleteId),
     }));
   };
+  handleFilterName = e => {
+    this.setState(prevState => ({
+      ...prevState,
+      filter: e.target.value,
+    }));
+  };
+  filterContacts = () => {
+    const { contacts, filter } = this.state;
+    if (filter) {
+      return contacts.filter(contact => contact.name.includes(filter));
+    }
+    return contacts;
+  };
 
   render() {
     const { contacts } = this.state;
@@ -37,19 +51,22 @@ export class App extends Component {
         style={{
           height: '100vh',
           display: 'flex',
-          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          fontSize: 40,
+          fontSize: 36,
           color: '#010101',
         }}
       >
-        <ContactForm onSubmit={this.submitForm} contactList={contacts} />
-        <h2 title="Filter">Filter</h2>
-        <ContactList
-          contactList={contacts}
-          onDelete={this.handeDeleteContact}
-        />
+        <Container>
+          <PhoneBook>Phonebook</PhoneBook>
+          <ContactForm contactList={contacts} onSubmit={this.submitForm} />
+          <Title>Contacts</Title>
+          <Filter handleFilterName={this.handleFilterName} />
+          <ContactList
+            contactList={this.filterContacts()}
+            onDelete={this.handeDeleteContact}
+          />
+        </Container>
       </div>
     );
   }
